@@ -92,6 +92,11 @@ namespace OxyPlot.Series
         public string YAxisKey { get; set; }
 
         /// <summary>
+        /// Clip axis by Plot Model Clip Area. The default is <c>false</c>.
+        /// </summary>
+        public bool UsePlotModelClipArrea { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the X coordinate of all data point increases monotonically.
         /// </summary>
         protected bool IsXMonotonic { get; set; }
@@ -104,7 +109,8 @@ namespace OxyPlot.Series
         /// <inheritdoc/>
         public override OxyRect GetClippingRect()
         {
-            return PlotElementUtilities.GetClippingRect(this);
+            return this.UsePlotModelClipArrea ? PlotElementUtilities.GetClippingRect(this.PlotModel.Axes) :
+                                                PlotElementUtilities.GetClippingRect(this);
         }
 
         /// <summary>

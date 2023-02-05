@@ -4,6 +4,10 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using OxyPlot.Axes;
+using System;
+using System.Linq;
+
 namespace OxyPlot
 {
     /// <summary>
@@ -21,6 +25,23 @@ namespace OxyPlot
             var xrect = new OxyRect(element.XAxis.ScreenMin, element.XAxis.ScreenMax);
             var yrect = new OxyRect(element.YAxis.ScreenMin, element.YAxis.ScreenMax);
             return xrect.Intersect(yrect);
+        }
+
+        /// <summary>
+        /// Gets the general clipping rectangle defined by the Colection of Axis.
+        /// </summary>
+        /// <param name="axes">Axis collection</param>
+        /// <returns></returns>
+        public static OxyRect GetClippingRect(ElementCollection<Axis> axes)
+        {
+            var yAxes = axes.Where(ax => ax.Position == AxisPosition.Left || ax.Position == AxisPosition.Right);
+            var xAxes = axes.Where(ax => ax.Position == AxisPosition.Bottom || ax.Position == AxisPosition.Top);
+            var maxY = yAxes.Max(ax => Math.Max(ax.ScreenMin.Y, ax.ScreenMax.Y));
+            var minY = yAxes.Min(ax => Math.Min(ax.ScreenMin.Y, ax.ScreenMax.Y));
+            var maxX = xAxes.Max(ax => Math.Max(ax.ScreenMax.X, ax.ScreenMax.X));
+            var minX = xAxes.Min(ax => Math.Min(ax.ScreenMin.X, ax.ScreenMin.X));
+
+            return new OxyRect(minX, minY, maxX - minX, maxY - minY);
         }
 
         /// <summary>
